@@ -113,14 +113,14 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
         /** XML HANDLING **/
         case (Some(mediaType), _)
           if mediaType.toString.contains("xml") => {
-          val htmlContentTry = Try {
+          val xmlToJsonContentTry = Try {
             XmlLifter.lift(XML.loadString(r.getContent.toString(Charsets.Utf8)))
           }
 
-          Future.const(htmlContentTry map { htmlContent =>
+          Future.const(xmlToJsonContentTry map { jsonContent =>
             val responseMap = Map(
               r.getStatus.getCode.toString -> (Map(
-                "content" -> htmlContent,
+                "content" -> jsonContent,
                 "chunked" -> r.isChunked
             )))
 

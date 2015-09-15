@@ -1,5 +1,7 @@
 package com.twitter.diffy.lifter
 
+import java.text.DateFormat
+
 import com.google.common.net.{HttpHeaders, MediaType}
 import com.twitter.io.Charsets
 import com.twitter.logging.Logger
@@ -8,6 +10,7 @@ import com.twitter.util.{Try, Future}
 import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 
 import scala.collection.JavaConversions._
+import scala.xml.XML
 
 object HttpLifter {
   val ControllerEndpointHeaderName = "X-Action-Name"
@@ -105,6 +108,24 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
         case (None, _) => {
           Future.const(Try(
             Message(controllerEndpoint, FieldMap(headersMap(r)))))
+        }
+
+        /** XML HANDLING **/
+        case (Some(mediaType), _)
+          if mediaType.toString.contains("xml") => {
+          val xmlToJsonContentTry = Try {
+            XmlLifter.lift(XML.loadString(r.getContent.toString(Charsets.Utf8)))
+          }
+
+          Future.const(xmlToJsonContentTry map { jsonContent =>
+            val responseMap = Map(
+              r.getStatus.getCode.toString -> (Map(
+                "content" -> jsonContent,
+                "chunked" -> r.isChunked
+            )))
+
+            Message(controllerEndpoint, FieldMap(responseMap))
+          })
         }
 
         case (Some(mediaType), _) => {

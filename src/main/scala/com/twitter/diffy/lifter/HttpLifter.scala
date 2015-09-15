@@ -121,8 +121,8 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
             val responseMap = Map(
               r.getStatus.getCode.toString -> (Map(
                 "content" -> htmlContent,
-                "chunked" -> r.isChunkedgith
-            )
+                "chunked" -> r.isChunked
+            )))
 
             Message(controllerEndpoint, FieldMap(responseMap))
           })

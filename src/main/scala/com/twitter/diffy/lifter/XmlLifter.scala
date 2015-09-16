@@ -21,12 +21,14 @@ object XmlLifter {
       case n: Elem => {
        val elem: Elem = n.copy(null)
         if( elem.child.length > 0 ) {
-          elem.copy(child = removeXmlPrefix(elem.child(0)))
+          elem.copy(child = elem.child.flatMap(child => removeXmlPrefix(child)))
         } else {
           elem
         }
       }
-      case n => n
+      case n => {
+          n
+      }
     }
   }
   def decode(xml: NodeSeq): JValue = Xml.toJson(xml)

@@ -63,11 +63,11 @@ start using Diffy to compare three instances of your service:
 
     ```
     java -jar diffy-server.jar \
-    -candidate=\"localhost:9992\" \
-    -master.primary=\"localhost:9990\" \
-    -master.secondary=\"localhost:9991\" \
-    -service.protocol=\"http\" \
-    -serviceName=\"My Service\" \
+    -candidate=localhost:9992 \
+    -master.primary=localhost:9990 \
+    -master.secondary=localhost:9991 \
+    -service.protocol=http \
+    -serviceName=My-Service \
     -proxy.port=:31900 \
     -admin.port=:31159 \
     -http.port=:31149 \
@@ -81,6 +81,10 @@ start using Diffy to compare three instances of your service:
     ```
 
 7. Watch the differences show up in your browser at [http://localhost:31149](http://localhost:31149).
+ 
+## FAQ's
+   For safety reasons `POST`, `PUT`, ` DELETE ` are ignored by default . Add ` -allowHttpSideEffects=true ` to your command line arguments to enable these verbs.
+
 
 ## License
 

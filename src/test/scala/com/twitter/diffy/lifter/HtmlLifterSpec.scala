@@ -20,7 +20,7 @@ class HtmlLifterSpec extends ParentSpec {
     }
 
     it("should return a Primitive Difference") {
-      Difference(HtmlLifter.lift(simpleActualDoc), HtmlLifter.lift(simpleExpectedDoc)).flattened must be (FieldMap(Map("body.children.children.attributes.class.PrimitiveDifference" -> PrimitiveDifference("box","round"))))
+      Difference(HtmlLifter.lift(simpleActualDoc), HtmlLifter.lift(simpleExpectedDoc), 0.0).flattened must be (FieldMap(Map("body.children.children.attributes.class.PrimitiveDifference" -> PrimitiveDifference("box","round"))))
     }
   }
 }

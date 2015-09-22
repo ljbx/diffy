@@ -29,7 +29,8 @@ object TestHelper extends MockitoSugar {
     rootUrl = "test",
     allowHttpSideEffects = true,
     excludeHttpHeadersComparison = true,
-    skipEmailsWhenNoErrors = false
+    skipEmailsWhenNoErrors = false,
+    epsilon = 0.0
   )
 
   def makeEmptyJoinedDifferences = {

@@ -70,6 +70,9 @@ object DiffyServiceModule extends TwitterModule {
   val skipEmailsWhenNoErrors =
     flag[Boolean]("skipEmailsWhenNoErrors", false, "Do not send emails if there are no critical errors")
 
+  val epsilon =
+    flag[Double]("epsilon", 0.0, "Differences within this tolerance are marked as NoDifference")
+
   @Provides
   @Singleton
   def settings =
@@ -93,7 +96,8 @@ object DiffyServiceModule extends TwitterModule {
       rootUrl(),
       allowHttpSideEffects(),
       excludeHttpHeadersComparison(),
-      skipEmailsWhenNoErrors()
+      skipEmailsWhenNoErrors(),
+      epsilon()
     )
 
   @Provides

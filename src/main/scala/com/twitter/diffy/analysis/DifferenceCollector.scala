@@ -39,15 +39,16 @@ class DifferenceAnalyzer @Inject()(
     request: Message,
     candidate: Message,
     primary: Message,
-    secondary: Message
+    secondary: Message,
+    epsilon: Double
   ): Unit = {
     getEndpointName(request.endpoint, candidate.endpoint,
         primary.endpoint, secondary.endpoint) foreach { endpointName =>
       // If there is no traceId then generate our own
       val id = Trace.idOption map { _.traceId.toLong } getOrElse(Random.nextLong)
 
-      val rawDiff = Difference(primary, candidate).flattened
-      val noiseDiff = Difference(primary, secondary).flattened
+      val rawDiff = Difference(primary, candidate, epsilon).flattened
+      val noiseDiff = Difference(primary, secondary, epsilon).flattened
 
       rawCounter.counter.count(endpointName, rawDiff)
       noiseCounter.counter.count(endpointName, noiseDiff)

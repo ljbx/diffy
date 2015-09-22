@@ -24,6 +24,7 @@ case class Settings(
   rootUrl: String,
   allowHttpSideEffects: Boolean,
   excludeHttpHeadersComparison: Boolean,
-  skipEmailsWhenNoErrors: Boolean)
+  skipEmailsWhenNoErrors: Boolean,
+  epsilon: Double)
 
 case class Target(path: String)

@@ -85,7 +85,7 @@ trait DifferenceProxy {
 
             case Throw(t) => log.debug(t, "error lifting request")
           } foreach { req =>
-            analyzer(req, candidateResponse, primaryResponse, secondaryResponse)
+            analyzer(req, candidateResponse, primaryResponse, secondaryResponse, settings.epsilon)
           }
       }
 

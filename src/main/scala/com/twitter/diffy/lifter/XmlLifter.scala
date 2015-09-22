@@ -9,14 +9,11 @@ import scala.xml.{Elem, Node, NodeSeq}
 object XmlLifter {
   def lift(node: NodeSeq): Any = node match {
     case nodeSeq: NodeSeq =>
-      FieldMap(
-        Map(
-          "content" -> JsonLifter.lift(JsonLifter.decode(
+          JsonLifter.lift(JsonLifter.decode(
             prettyJson(renderJValue(
               decode(nodeSeq.flatMap(node => removeXmlPrefix(node)))
             ))
           ))
-        ))
   }
 
   def removeXmlPrefix(node: Node): NodeSeq = {

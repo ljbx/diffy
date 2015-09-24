@@ -1,6 +1,6 @@
 package com.twitter.diffy.lifter
 
-import java.text.DateFormat
+import java.nio.charset.StandardCharsets
 
 import com.google.common.net.{HttpHeaders, MediaType}
 import com.twitter.io.Charsets
@@ -45,7 +45,18 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
 
   def liftRequest(req: HttpRequest): Future[Message] = {
     val canonicalResource = Option(req.headers.get("Canonical-Resource"))
-    Future.value(Message(canonicalResource, FieldMap(Map("request"-> req.toString))))
+    val contentType = Option(req.headers.get("Content-Type"))
+    contentType match {
+      case Some(mediaType) => Future.value(Message(canonicalResource,
+        FieldMap(Map(
+          "request" -> req.toString,
+          "body" -> req.getContent.toString(StandardCharsets.UTF_8),
+          "mediaType" -> mediaType))))
+      case _ => Future.value(Message(canonicalResource,
+        FieldMap(Map(
+          "request" -> req.toString,
+          "body" -> req.getContent.toString(StandardCharsets.UTF_8)))))
+    }
   }
 
   def liftResponse(resp: Try[HttpResponse]): Future[Message] = {

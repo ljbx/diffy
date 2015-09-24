@@ -357,6 +357,9 @@ module.controller 'RequestController', ($scope, api, router) ->
       $scope.loading = false
       $scope.request = response
 
+      if $scope.request.request.mediaType.indexOf("xml") > -1
+        $scope.request.request.body = $.parseJSON(xml2json(parseXml($scope.request.request.body), ""))
+
       diffs = DeepDiff($scope.request.left, $scope.request.right)
       pathSelectors = []
 
@@ -374,7 +377,6 @@ module.controller 'SettingsController', ($scope, $timeout, $interval, api, route
     api 'info', {}, (response) ->
       $.extend info, response
 
-  apiInterval = $interval loadInfo, 10000
   loadInfo()
 
   $scope.info = info

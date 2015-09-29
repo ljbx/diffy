@@ -71,7 +71,10 @@ start using Diffy to compare three instances of your service:
     -proxy.port=:31900 \
     -admin.port=:31159 \
     -http.port=:31149 \
-    -rootUrl='localhost:31149'
+    -rootUrl='localhost:31149' \
+	-allowHttpSideEffects=true \
+	-excludeKeys="anyKey" \
+	-epsilon=0.000000001
     ```
 
 6. Send a few test requests to your Diffy instance on its proxy port:
@@ -81,7 +84,18 @@ start using Diffy to compare three instances of your service:
     ```
 
 7. Watch the differences show up in your browser at [http://localhost:31149](http://localhost:31149).
- 
+
+## Additional Arguments epsilon and excludeKeys
+
+The excludeKeys argument let you configure keys that are ignored for each comparison, furthermore every child node will be ignored, so be cautious about what you exclude. The excludeKeys arguments takes a comma separated list e.g "key1, key2, key3".
+
+With the epsilon argument you can ignore floating point rounding errors. It's applied on both Float and Double values. Default value is 0.
+
+## XML Responses
+
+This version supports XML and especially soap Requests/Responses.
+By default all XML prefixes are removed before the xml response is converted into json.
+
 ## FAQ's
    For safety reasons `POST`, `PUT`, ` DELETE ` are ignored by default . Add ` -allowHttpSideEffects=true ` to your command line arguments to enable these verbs.
 

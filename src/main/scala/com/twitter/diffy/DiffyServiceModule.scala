@@ -2,7 +2,7 @@ package com.twitter.diffy
 
 import com.google.inject.Provides
 import com.twitter.diffy.analysis.{InMemoryDifferenceCollector, NoiseDifferenceCounter, RawDifferenceCounter, InMemoryDifferenceCounter}
-import com.twitter.diffy.proxy.{Target, Settings}
+import com.twitter.diffy.proxy.{DifferenceConf, Target, Settings}
 import com.twitter.inject.TwitterModule
 import com.twitter.util.TimeConversions._
 import java.net.InetSocketAddress
@@ -73,6 +73,9 @@ object DiffyServiceModule extends TwitterModule {
   val epsilon =
     flag[Double]("epsilon", 0.0, "Differences within this tolerance are marked as NoDifference")
 
+  val excludeKeys =
+     flag[String]("excludeKeys", "", "Exclude keys from comparison")
+
   @Provides
   @Singleton
   def settings =
@@ -97,7 +100,7 @@ object DiffyServiceModule extends TwitterModule {
       allowHttpSideEffects(),
       excludeHttpHeadersComparison(),
       skipEmailsWhenNoErrors(),
-      epsilon()
+      DifferenceConf(epsilon(), excludeKeys())
     )
 
   @Provides

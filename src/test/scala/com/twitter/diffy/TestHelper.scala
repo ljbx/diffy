@@ -30,7 +30,7 @@ object TestHelper extends MockitoSugar {
     allowHttpSideEffects = true,
     excludeHttpHeadersComparison = true,
     skipEmailsWhenNoErrors = false,
-    epsilon = 0.0
+    differenceConf = mock[DifferenceConf]
   )
 
   def makeEmptyJoinedDifferences = {

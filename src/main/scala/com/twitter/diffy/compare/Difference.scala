@@ -1,10 +1,8 @@
 package com.twitter.diffy.compare
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.inject.Inject
-import com.twitter.diffy.compare
-import com.twitter.diffy.lifter.{StringLifter, FieldMap, JsonLifter}
-import com.twitter.diffy.proxy.Settings
+import com.twitter.diffy.lifter.{Message, StringLifter, FieldMap, JsonLifter}
+import com.twitter.diffy.proxy.{DifferenceConf, Settings}
 import com.twitter.util.Memoize
 import java.nio.ByteBuffer
 import scala.language.postfixOps
@@ -132,19 +130,20 @@ case class ObjectDifference(mapDiff: MapDifference[String]) extends Difference {
 }
 
 object Difference {
+  def apply[A](left: Any, right: Any, differenceConf: DifferenceConf): Difference = {
 
-  def apply[A](left: Any, right: Any, epsilon: Double): Difference =
     (lift(left), lift(right)) match {
       case (l, r) if l == r => NoDifference(l)
-      case (l, r) if isPrimitive(l) && l.getClass == r.getClass && isWithinTolerance(l,r, epsilon) => NoDifference(l)
-      case (l, r) if isPrimitive(l) && l.getClass == r.getClass => PrimitiveDifference(l, r)
-      case (ls: Seq[_], rs: Seq[_]) => diffSeq(ls, rs, epsilon)
+      case (l, r) if isPrimitiveDifference(l, r) && isWithinTolerance(l, r, differenceConf.epsilon) => NoDifference(l)
+      case (l, r) if isPrimitiveDifference(l, r) => PrimitiveDifference(l, r)
+      case (ls: Seq[_], rs: Seq[_]) => diffSeq(ls, rs, differenceConf)
       case (ls: Set[A], rs: Set[A]) => diffSet(ls, rs)
-      case (lm: FieldMap[Any], rm: FieldMap[Any]) => diffObjectMap(lm, rm, epsilon)
-      case (lm: Map[A, Any], rm: Map[A, Any]) => diffMap(lm, rm, epsilon)
+      case (lm: FieldMap[Any], rm: FieldMap[Any]) => diffObjectMap(lm, rm, differenceConf)
+      case (lm: Map[A, Any], rm: Map[A, Any]) => diffMap(lm, rm, differenceConf)
       case (l, r) if l.getClass != r.getClass => TypeDifference(l, r)
-      case (l, r) => diffObject(l, r, epsilon)
+      case (l, r) => diffObject(l, r, differenceConf)
     }
+  }
 
   def isWithinTolerance(left: Any, right: Any, epsilon: Double) : Boolean = {
     (left, right) match {
@@ -154,10 +153,14 @@ object Difference {
     }
   }
 
+  def isPrimitiveDifference(left: Any, right: Any) : Boolean = {
+    isPrimitive(left) && left.getClass == right.getClass
+  }
+
   def diffSet[A](left: Set[A], right: Set[A]): TerminalDifference =
     if(left == right) NoDifference(left) else SetDifference(left -- right, right -- left)
 
-  def diffSeq[A](left: Seq[A], right: Seq[A], epsilon: Double): SeqDifference = {
+  def diffSeq[A](left: Seq[A], right: Seq[A], differenceConf: DifferenceConf): SeqDifference = {
     val leftNotRight = left diff right
     val rightNotLeft = right diff left
 
@@ -165,25 +168,35 @@ object Difference {
       def seqPattern(s: Seq[A]) = s map { left.indexOf(_) }
       OrderingDifference(seqPattern(left), seqPattern(right))
     } else if (left.length == right.length) {
-      IndexedDifference((left zip right) map { case (le, re) => apply(le, re, epsilon) })
+      IndexedDifference((left zip right) map { case (le, re) => apply(le, re, differenceConf) })
     } else {
       SeqSizeDifference(leftNotRight, rightNotLeft)
     }
   }
 
-  def diffMap[A](lm: Map[A, Any], rm: Map[A, Any], epsilon: Double): MapDifference[A] =
-    MapDifference (
+  def diffMap[A](lm: Map[A, Any], rm: Map[A, Any], differenceConf: DifferenceConf): MapDifference[A] = {
+    val excludedKeys = differenceConf.excludeKeys.split(",").map(key => key.trim)
+
+    MapDifference(
       diffSet(lm.keySet, rm.keySet),
-      (lm.keySet intersect  rm.keySet) map { key =>
-          key -> apply(lm(key), rm(key), epsilon)
+      (lm.keySet intersect rm.keySet) map { key => {
+        key -> {
+          if( excludedKeys.contains( key ) )
+            apply(null, null, differenceConf)
+          else
+            apply(lm(key), rm(key), differenceConf)
+        }
+      }
+
       } toMap
     )
+  }
 
-  def diffObjectMap(lm: FieldMap[Any], rm: FieldMap[Any], epsilon: Double): ObjectDifference =
-    ObjectDifference(diffMap(lm.toMap, rm.toMap, epsilon))
+  def diffObjectMap(lm: FieldMap[Any], rm: FieldMap[Any], differenceConf: DifferenceConf): ObjectDifference =
+    ObjectDifference(diffMap(lm.toMap, rm.toMap, differenceConf))
 
-  def diffObject[A](left: A, right: A, epsilon: Double): ObjectDifference =
-    ObjectDifference(diffMap(mkMap(left), mkMap(right), epsilon))
+  def diffObject[A](left: A, right: A, differenceConf: DifferenceConf): ObjectDifference =
+    ObjectDifference(diffMap(mkMap(left), mkMap(right), differenceConf))
 
   val isPrimitive: Any => Boolean = {
     case _: Unit => true

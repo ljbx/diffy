@@ -4,6 +4,7 @@ import javax.inject.Inject
 
 import com.twitter.diffy.compare.{Difference, PrimitiveDifference}
 import com.twitter.diffy.lifter.{JsonLifter, Message}
+import com.twitter.diffy.proxy.DifferenceConf
 import com.twitter.diffy.thriftscala._
 import com.twitter.finagle.tracing.Trace
 import com.twitter.logging._
@@ -40,15 +41,15 @@ class DifferenceAnalyzer @Inject()(
     candidate: Message,
     primary: Message,
     secondary: Message,
-    epsilon: Double
+    differenceConf: DifferenceConf
   ): Unit = {
     getEndpointName(request.endpoint, candidate.endpoint,
         primary.endpoint, secondary.endpoint) foreach { endpointName =>
       // If there is no traceId then generate our own
       val id = Trace.idOption map { _.traceId.toLong } getOrElse(Random.nextLong)
 
-      val rawDiff = Difference(primary, candidate, epsilon).flattened
-      val noiseDiff = Difference(primary, secondary, epsilon).flattened
+      val rawDiff = Difference(primary, candidate, differenceConf).flattened
+      val noiseDiff = Difference(primary, secondary, differenceConf).flattened
 
       rawCounter.counter.count(endpointName, rawDiff)
       noiseCounter.counter.count(endpointName, noiseDiff)

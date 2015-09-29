@@ -2,6 +2,7 @@ package com.twitter.diffy.lifter
 
 import com.twitter.diffy.ParentSpec
 import com.twitter.diffy.compare.{Difference, PrimitiveDifference}
+import com.twitter.diffy.proxy.DifferenceConf
 import org.jsoup.Jsoup
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -20,7 +21,7 @@ class HtmlLifterSpec extends ParentSpec {
     }
 
     it("should return a Primitive Difference") {
-      Difference(HtmlLifter.lift(simpleActualDoc), HtmlLifter.lift(simpleExpectedDoc), 0.0).flattened must be (FieldMap(Map("body.children.children.attributes.class.PrimitiveDifference" -> PrimitiveDifference("box","round"))))
+      Difference(HtmlLifter.lift(simpleActualDoc), HtmlLifter.lift(simpleExpectedDoc),DifferenceConf.apply(0.0,"")).flattened must be (FieldMap(Map("body.children.children.attributes.class.PrimitiveDifference" -> PrimitiveDifference("box","round"))))
     }
   }
 }

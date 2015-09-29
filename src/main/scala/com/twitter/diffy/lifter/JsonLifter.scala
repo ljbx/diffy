@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import com.twitter.diffy.proxy.Settings
 import com.twitter.util.{Try, NoStacktrace}
 
 import scala.collection.JavaConversions._
@@ -28,7 +29,7 @@ object JsonLifter {
       }  sortBy { _.toString }
     case JsonToken.START_OBJECT       => {
       val fields = node.fieldNames.toSet
-      if (fields.exists{ field => Try(toolbox.parse(s"object ${field}123")).isThrow}) {
+      if (fields.exists{ field => Try(toolbox.parse(s"object ${field}123")).isThrow} ) {
         node.fields map {field => (field.getKey -> lift(field.getValue))} toMap
       } else {
         FieldMap(

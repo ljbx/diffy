@@ -176,18 +176,13 @@ object Difference {
 
   def diffMap[A](lm: Map[A, Any], rm: Map[A, Any], differenceConf: DifferenceConf): MapDifference[A] = {
     val excludedKeys = differenceConf.excludeKeys.split(",").map(key => key.trim)
+    val lmFilteredKeySet = lm.keySet.filter(key => !excludedKeys.contains(key))
+    val rmFilteredKeySet = rm.keySet.filter(key => !excludedKeys.contains(key))
 
     MapDifference(
-      diffSet(lm.keySet, rm.keySet),
-      (lm.keySet intersect rm.keySet) map { key => {
-        key -> {
-          if( excludedKeys.contains( key ) )
-            apply(null, null, differenceConf)
-          else
-            apply(lm(key), rm(key), differenceConf)
-        }
-      }
-
+      diffSet(lmFilteredKeySet, rmFilteredKeySet),
+      (lmFilteredKeySet intersect rmFilteredKeySet) map { key =>
+        key -> apply(lm(key), rm(key), differenceConf)
       } toMap
     )
   }

@@ -33,8 +33,8 @@ class DifferenceSpec
           (Name("puneet", "khanduri"), Name("puneet", "khanduri"))
         )
       testCases foreach { case (left, right) =>
-        Difference(left, right, DifferenceConf.apply(0.0,"")) must be(NoDifference(Difference.lift(left)))
-        Difference(JsonLifter(left), JsonLifter(right), DifferenceConf.apply(0.0,"")) must be(NoDifference(Difference.lift(JsonLifter(left))))
+        Difference(left, right, DifferenceConf.apply(0.0,"", false)) must be(NoDifference(Difference.lift(left)))
+        Difference(JsonLifter(left), JsonLifter(right), DifferenceConf.apply(0.0,"", false)) must be(NoDifference(Difference.lift(JsonLifter(left))))
       }
     }
 
@@ -47,7 +47,7 @@ class DifferenceSpec
           (1.8, 3.9)
         )
       testCases foreach { case (left, right) =>
-        Difference(left, right, DifferenceConf.apply(0.0,"")) must be(PrimitiveDifference(left,right))
+        Difference(left, right, DifferenceConf.apply(0.0,"", false)) must be(PrimitiveDifference(left,right))
       }
     }
 
@@ -61,7 +61,7 @@ class DifferenceSpec
         ("hello", false)
       )
       testCases foreach { case (left, right) =>
-        Difference(left, right, DifferenceConf.apply(0.0,"")) must be(TypeDifference(left, right))
+        Difference(left, right, DifferenceConf.apply(0.0,"", false)) must be(TypeDifference(left, right))
       }
     }
 
@@ -69,23 +69,23 @@ class DifferenceSpec
       val testCases = Seq(true, 1, "hello", Seq(1, 2, 3))
 
       testCases foreach { testCase =>
-        Difference(JsonLifter.JsonNull, testCase, DifferenceConf.apply(0.0,"")) must
+        Difference(JsonLifter.JsonNull, testCase, DifferenceConf.apply(0.0,"", false)) must
           be(TypeDifference(JsonLifter.JsonNull, testCase))
       }
     }
 
     it("should detect no difference when two JsonNull objects are compared") {
-      Difference(JsonLifter.JsonNull, JsonLifter.JsonNull, DifferenceConf.apply(0.0,"")) must be(NoDifference(JsonLifter.JsonNull))
+      Difference(JsonLifter.JsonNull, JsonLifter.JsonNull, DifferenceConf.apply(0.0,"", false)) must be(NoDifference(JsonLifter.JsonNull))
     }
 
     it("should return an OrderingDifference when two Seqs have the same elements but different order") {
-      Difference(Seq("a", "b", "c"), Seq("c", "b", "a"), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Seq("a", "b", "c"), Seq("c", "b", "a"), DifferenceConf.apply(0.0,"", false)) must be(
         OrderingDifference(leftPattern = Seq(0, 1, 2), rightPattern = Seq(2, 1, 0))
       )
     }
 
     it("should return a SeqSizeDifference when two Seqs are of different size") {
-      Difference(Seq("a", "a", "b", "b"), Seq("a", "b", "b", "c", "c"), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Seq("a", "a", "b", "b"), Seq("a", "b", "b", "c", "c"), DifferenceConf.apply(0.0,"", false)) must be(
         SeqSizeDifference(
           leftNotRight = Seq("a"),
           rightNotLeft = Seq("c", "c")
@@ -94,7 +94,7 @@ class DifferenceSpec
     }
 
     it("should return a IndexedDifference when two Seqs are of the same size but have different elements") {
-      Difference(Seq("a", "b", "c"), Seq("a", "b", "d"), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Seq("a", "b", "c"), Seq("a", "b", "d"), DifferenceConf.apply(0.0,"", false)) must be(
         IndexedDifference(
           indexedDiffs =
             Seq(
@@ -107,13 +107,13 @@ class DifferenceSpec
     }
 
     it("should detect when two Sets are not equal") {
-      Difference(Set(1, 2, 3), Set(2, 3, 4), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Set(1, 2, 3), Set(2, 3, 4), DifferenceConf.apply(0.0,"", false)) must be(
         SetDifference(leftNotRight = Set(1), rightNotLeft = Set(4))
       )
     }
 
     it("should detect when two Maps are not equal") {
-      Difference(Map(1 -> 2, 2 -> 3, 3 -> 4), Map(1 -> 2, 2 -> 4, 4 -> 5), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Map(1 -> 2, 2 -> 3, 3 -> 4), Map(1 -> 2, 2 -> 4, 4 -> 5), DifferenceConf.apply(0.0,"", false)) must be(
         MapDifference(
           keys = SetDifference(leftNotRight = Set(3), rightNotLeft = Set(4)),
           values = Map(1 -> NoDifference(2), 2 -> PrimitiveDifference(3, 4))
@@ -122,7 +122,7 @@ class DifferenceSpec
     }
 
     it("should detect when two case class instances are not equal") {
-      Difference(Name("puneet", "khanduri"), Name("prashant", "khanduri"), DifferenceConf.apply(0.0,"")) must be(
+      Difference(Name("puneet", "khanduri"), Name("prashant", "khanduri"), DifferenceConf.apply(0.0,"", false)) must be(
         ObjectDifference(MapDifference(
           keys = NoDifference(Set("first", "last")),
           values =
@@ -137,7 +137,7 @@ class DifferenceSpec
     it("should detect difference between binaries embedded within thrift structs") {
       val left = ByteBuffer.wrap("leftBuffer".getBytes)
       val right = ByteBuffer.wrap("rightBuffer".getBytes)
-      Difference(left,right, DifferenceConf.apply(0.0,"")) must be (
+      Difference(left,right, DifferenceConf.apply(0.0,"", false)) must be (
         PrimitiveDifference("leftBuffer", "rightBuffer")
       )
     }

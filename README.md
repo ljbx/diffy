@@ -85,11 +85,13 @@ start using Diffy to compare three instances of your service:
 
 7. Watch the differences show up in your browser at [http://localhost:31149](http://localhost:31149).
 
-## Additional Arguments epsilon and excludeKeys
+## Additional arguments epsilon, excludeKeys and typeDiffWeaken
 
-The excludeKeys argument let you configure keys that are ignored for each comparison, furthermore every child node will be ignored, so be cautious about what you exclude. The excludeKeys arguments takes a comma separated list e.g "key1, key2, key3".
+The excludeKeys argument let you configure keys that are ignored for each comparison, furthermore every child node will be ignored, so be cautious about what you exclude. The excludeKeys argument takes a comma separated list e.g "key1, key2, key3".
 
 With the epsilon argument you can ignore floating point rounding errors. It's applied on both Float and Double values. Default value is 0.
+
+With the typeDiffWeaken argument you can ignore TypeDifferences between floating point and integer types. Default is false.
 
 ## XML Responses
 

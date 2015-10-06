@@ -28,4 +28,4 @@ case class Settings(
   differenceConf: DifferenceConf)
 
 case class Target(path: String)
-case class DifferenceConf(epsilon: Double, excludeKeys: String)
+case class DifferenceConf(epsilon: Double, excludeKeys: String, typeDiffWeaken: Boolean)

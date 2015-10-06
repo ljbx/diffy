@@ -76,6 +76,9 @@ object DiffyServiceModule extends TwitterModule {
   val excludeKeys =
      flag[String]("excludeKeys", "", "Exclude keys from comparison")
 
+  val typeDiffWeaken =
+     flag[Boolean]("typeDiffWeaken", false, "ignore float/int differences")
+
   @Provides
   @Singleton
   def settings =
@@ -100,7 +103,7 @@ object DiffyServiceModule extends TwitterModule {
       allowHttpSideEffects(),
       excludeHttpHeadersComparison(),
       skipEmailsWhenNoErrors(),
-      DifferenceConf(epsilon(), excludeKeys())
+      DifferenceConf(epsilon(), excludeKeys(), typeDiffWeaken())
     )
 
   @Provides

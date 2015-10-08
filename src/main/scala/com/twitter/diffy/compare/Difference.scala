@@ -151,6 +151,10 @@ object Difference {
       case (l: Double, r: Double) => Math.abs(l - r) < epsilon
       case (l: Double, r: Float) => Math.abs(l - r) < epsilon
       case (l: Float, r: Double) => Math.abs(l - r) < epsilon
+      case (l: Float, r: Long) => Math.abs(l - r) < epsilon
+      case (l: Double, r: Long) => Math.abs(l - r) < epsilon
+      case (l: Long, r: Float) => Math.abs(l - r) < epsilon
+      case (l: Long, r: Double) => Math.abs(l - r) < epsilon
       case _ => false
     }
   }

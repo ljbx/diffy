@@ -82,7 +82,7 @@ object InMemoryDifferenceCollector {
 class InMemoryDifferenceCollector {
   import InMemoryDifferenceCollector._
 
-  val requestsPerField: Int = 10
+  val requestsPerField: Int = 25
   val fields = mutable.Map.empty[Field, mutable.Queue[DifferenceResult]]
 
   private[this] def sanitizePath(p: String) = p.stripSuffix("/").stripPrefix("/")

@@ -74,7 +74,8 @@ start using Diffy to compare three instances of your service:
     -rootUrl='localhost:31149' \
 	-allowHttpSideEffects=true \
 	-excludeKeys="anyKey" \
-	-epsilon=0.000000001
+	-epsilon=0.000000001 \
+	-disableEmailReports=true
     ```
 
 6. Send a few test requests to your Diffy instance on its proxy port:
@@ -85,11 +86,13 @@ start using Diffy to compare three instances of your service:
 
 7. Watch the differences show up in your browser at [http://localhost:31149](http://localhost:31149).
 
-## Additional arguments epsilon, excludeKeys and typeDiffWeaken
+## Additional arguments epsilon, excludeKeys, disableEmailReports and typeDiffWeaken
 
 With the excludeKeys argument you can configure keys that will be ignored for comparison, furthermore every child node will be ignored, so be cautious about what you exclude. The excludeKeys argument takes a comma separated list e.g "key1, key2, key3".
 
 With the epsilon argument you can ignore floating point rounding errors. It's applied on both Float and Double values. Default value is 0.
+
+With the disableEmailReports argument set to true, no email reports will be sent. Default value is false.
 
 With the typeDiffWeaken argument you can ignore TypeDifferences between floating point and integer types. Default is false.
 

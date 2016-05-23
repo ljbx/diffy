@@ -79,6 +79,9 @@ object DiffyServiceModule extends TwitterModule {
   val typeDiffWeaken =
      flag[Boolean]("typeDiffWeaken", false, "ignore float/int differences")
 
+  val disableEmailReports =
+    flag[Boolean]("disableEmailReports", false, "Disable Email report feature")
+
   @Provides
   @Singleton
   def settings =
@@ -103,7 +106,8 @@ object DiffyServiceModule extends TwitterModule {
       allowHttpSideEffects(),
       excludeHttpHeadersComparison(),
       skipEmailsWhenNoErrors(),
-      DifferenceConf(epsilon(), excludeKeys(), typeDiffWeaken())
+      DifferenceConf(epsilon(), excludeKeys(), typeDiffWeaken()),
+      disableEmailReports()
     )
 
   @Provides

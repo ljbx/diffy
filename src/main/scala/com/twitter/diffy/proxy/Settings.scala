@@ -25,7 +25,8 @@ case class Settings(
   allowHttpSideEffects: Boolean,
   excludeHttpHeadersComparison: Boolean,
   skipEmailsWhenNoErrors: Boolean,
-  differenceConf: DifferenceConf)
+  differenceConf: DifferenceConf,
+  disableEmailReports: Boolean)
 
 case class Target(path: String)
 case class DifferenceConf(epsilon: Double, excludeKeys: String, typeDiffWeaken: Boolean)

@@ -101,6 +101,10 @@ With the typeDiffWeaken argument you can ignore TypeDifferences between floating
 This version supports XML and especially soap Requests/Responses.
 By default all XML prefixes are removed before the xml response is converted into json.
 
+### Running example on docker-compose
+
+Inside the example directory you will find instructions to run a complete example with apis and diffy configured and ready to run using docker-compose.
+ 
 ## FAQ's
    For safety reasons `POST`, `PUT`, ` DELETE ` are ignored by default . Add ` -allowHttpSideEffects=true ` to your command line arguments to enable these verbs.
 

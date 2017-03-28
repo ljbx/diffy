@@ -134,7 +134,8 @@ object Difference {
 
     (lift(left), lift(right)) match {
       case (l, r) if l == r => NoDifference(l)
-      case (l, r) if isPrimitiveDifference(l, r, differenceConf.typeDiffWeaken) && isWithinTolerance(l, r, differenceConf.epsilon) => NoDifference(l)
+      case (l, r) if isPrimitiveDifference(l, r, differenceConf.typeDiffWeaken) &&
+        isWithinTolerance(l, r, differenceConf.epsilon) => NoDifference(l)
       case (l, r) if isPrimitiveDifference(l, r, differenceConf.typeDiffWeaken) => PrimitiveDifference(l, r)
       case (ls: Seq[_], rs: Seq[_]) => diffSeq(ls, rs, differenceConf)
       case (ls: Set[A], rs: Set[A]) => diffSet(ls, rs)
@@ -161,7 +162,7 @@ object Difference {
 
   def isPrimitiveDifference(left: Any, right: Any, isTypeDiffWeaken: Boolean) : Boolean = {
     val isSameClass: Boolean = if (isTypeDiffWeaken) {
-      if( left.getClass == right.getClass )
+      if ( left.getClass == right.getClass )
         true
       else {
         (left, right) match {

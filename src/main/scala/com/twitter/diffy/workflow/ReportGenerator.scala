@@ -93,7 +93,6 @@ class ReportGenerator @Inject()(
 
   def conditionallySendReport(reportData: ReportData) =
     if (settings.disableEmailReports || (reportData.criticalDiffs == 0 && settings.skipEmailsWhenNoErrors)) {
-      log.info("Skipping E-Mail report")
       Future.Unit
     } else {
       sendReport(reportData)

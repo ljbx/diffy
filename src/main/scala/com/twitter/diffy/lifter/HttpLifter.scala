@@ -77,7 +77,10 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
           )
 
         /** When Content-Type is set as application/json, lift as Json **/
-        case (Some(mediaType), _) if mediaType.is(MediaType.JSON_UTF_8) || mediaType.toString == "application/json" => {
+        case (Some(mediaType), _)
+            if mediaType.is(MediaType.JSON_UTF_8) ||
+            mediaType.toString == "application/json" ||
+            mediaType.toString == "application/hal+json" => {
           val jsonContentTry = Try {
             JsonLifter.decode(r.getContent.toString(Charsets.Utf8))
           }

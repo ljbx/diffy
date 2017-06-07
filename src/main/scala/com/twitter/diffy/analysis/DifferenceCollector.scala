@@ -68,7 +68,12 @@ class DifferenceAnalyzer @Inject()(
             secondary = JsonLifter.encode(secondary.result)
           )
         )
-
+        log.clearHandlers();
+        log.addHandler( FileHandler(
+          filename = normalizeEndpointName(endpointName) + "Differences.log",
+          rollPolicy = Policy.MaxSize(128.megabytes),
+          rotateCount = 2
+        )())
         log.info(s"diff[$id]=$diffResult")
         store.create(diffResult)
       } else {

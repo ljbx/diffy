@@ -82,7 +82,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
             mediaType.toString == "application/json" ||
             mediaType.toString == "application/hal+json" => {
           val jsonContentTry = Try {
-            JsonLifter.decode(r.getContent.toString(Charsets.Utf8))
+            JsonLifter.decode(r.getContent.copy.toString(Charsets.Utf8))
           }
 
           Future.const(jsonContentTry map { jsonContent =>
@@ -103,7 +103,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
         case (Some(mediaType), _)
           if mediaType.is(MediaType.HTML_UTF_8) || mediaType.toString == "text/html" => {
             val htmlContentTry = Try {
-              HtmlLifter.lift(HtmlLifter.decode(r.getContent.toString(Charsets.Utf8)))
+              HtmlLifter.lift(HtmlLifter.decode(r.getContent.copy.toString(Charsets.Utf8)))
             }
 
             Future.const(htmlContentTry map { htmlContent =>

@@ -31,7 +31,8 @@ object TestHelper extends MockitoSugar {
     excludeHttpHeadersComparison = true,
     skipEmailsWhenNoErrors = false,
     differenceConf = mock[DifferenceConf],
-    disableEmailReports = false
+    disableEmailReports = false,
+    httpsPort = "443"
   )
 
   def makeEmptyJoinedDifferences = {

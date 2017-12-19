@@ -35,7 +35,12 @@ trait HttpDifferenceProxy extends DifferenceProxy {
   override type Srv = HttpService
 
   override def serviceFactory(serverset: String, label: String) =
-    HttpService(Http.newClient(serverset, label).toService)
+    HttpService(
+      Http.client
+        .withMaxResponseSize( new StorageUnit( 31457280 ) )
+        .withMaxRequestSize( new StorageUnit( 31457280 ) )
+        .newService(serverset, label)
+    )
 
   override lazy val server =
     Http.serve(

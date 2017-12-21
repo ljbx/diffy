@@ -37,8 +37,8 @@ trait HttpDifferenceProxy extends DifferenceProxy {
   override def serviceFactory(serverset: String, label: String) =
     HttpService(
       Http.client
-        .withMaxResponseSize( new StorageUnit( 62914560 ) )
-        .withMaxRequestSize( new StorageUnit( 62914560 ) )
+        .withMaxResponseSize( new StorageUnit( 125829120 ) )
+        .withMaxRequestSize( new StorageUnit( 125829120 ) )
         .newService(serverset, label)
     )
 
@@ -114,8 +114,8 @@ case class SimpleHttpsDifferenceProxy (
   override def serviceFactory(serverset: String, label: String) =
     HttpService(
       Http.client
-        .withMaxResponseSize( new StorageUnit( 62914560 ) )
-        .withMaxRequestSize( new StorageUnit( 62914560 ) )
+        .withMaxResponseSize( new StorageUnit( 125829120 ) )
+        .withMaxRequestSize( new StorageUnit( 125829120 ) )
         .withTls(serverset)
         .newService(serverset+":"+settings.httpsPort, label)
     )

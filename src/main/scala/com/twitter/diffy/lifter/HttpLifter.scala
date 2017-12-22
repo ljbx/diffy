@@ -118,7 +118,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
             })
           }
 
-        /** When Content-Type is set as text/plain **/
+        /** When Content-Type is set as text/html**/
         case (Some(mediaType), _)
           if mediaType.is(MediaType.PLAIN_TEXT_UTF_8) => {
           val textContentTry = Try {

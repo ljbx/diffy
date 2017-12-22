@@ -151,13 +151,13 @@ class HttpLifterSpec extends ParentSpec {
         val lifter = new HttpLifter(false)
         val resp = response(HttpResponseStatus.OK, validJsonBody)
         resp.headers.remove(HttpHeaders.Names.CONTENT_TYPE)
-          .add(HttpHeaders.Names.CONTENT_TYPE, textContentType)
+          .add(HttpHeaders.Names.CONTENT_TYPE, MediaType.APPLICATION_BINARY.toString)
 
         val thrown = the [Exception] thrownBy {
           Await.result(lifter.liftResponse(Try(resp)))
         }
 
-        thrown.getMessage should be (HttpLifter.contentTypeNotSupportedException(MediaType.PLAIN_TEXT_UTF_8.toString).getMessage)
+        thrown.getMessage should be (HttpLifter.contentTypeNotSupportedException(MediaType.APPLICATION_BINARY.toString).getMessage)
       }
 
       it("return None as controller endpoint when action header was not set") {

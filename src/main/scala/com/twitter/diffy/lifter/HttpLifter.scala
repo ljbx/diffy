@@ -118,6 +118,25 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
             })
           }
 
+        /** When Content-Type is set as text/plain **/
+        case (Some(mediaType), _)
+          if mediaType.is(MediaType.PLAIN_TEXT_UTF_8) => {
+          val textContentTry = Try {
+            r.getContent.copy.toString(Charsets.Utf8)
+          }
+
+          Future.const(textContentTry map { textContent =>
+            val responseMap = Map(
+              r.getStatus.getCode.toString -> (Map(
+                "content" -> textContent,
+                "chunked" -> r.isChunked
+              ) ++ headersMap(r))
+            )
+
+            Message(controllerEndpoint, FieldMap(responseMap))
+          })
+        }
+
         /** When content type is not set, only compare headers **/
         case (None, _) => {
           Future.const(Try(

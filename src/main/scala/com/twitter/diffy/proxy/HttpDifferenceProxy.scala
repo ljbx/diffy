@@ -37,8 +37,8 @@ trait HttpDifferenceProxy extends DifferenceProxy {
   override def serviceFactory(serverset: String, label: String) =
     HttpService(
       Http.client
-        .withMaxResponseSize( new StorageUnit( 125829120 ) )
-        .withMaxRequestSize( new StorageUnit( 125829120 ) )
+        .withMaxResponseSize( new StorageUnit( 625829120 ) )
+        .withMaxRequestSize( new StorageUnit( 625829120 ) )
         .newService(serverset, label)
     )
 
@@ -58,7 +58,7 @@ trait HttpDifferenceProxy extends DifferenceProxy {
 object SimpleHttpDifferenceProxy {
   /**
    * Side effects can be dangerous if replayed on production backends. This
-   * filter ignores all POST, PUT, and DELETE requests if the
+   * filter ignores all POST, PUT, and DELETE requests if thea
    * "allowHttpSideEffects" flag is set to false.
    */
   lazy val httpSideEffectsFilter =
@@ -114,8 +114,8 @@ case class SimpleHttpsDifferenceProxy (
   override def serviceFactory(serverset: String, label: String) =
     HttpService(
       Http.client
-        .withMaxResponseSize( new StorageUnit( 125829120 ) )
-        .withMaxRequestSize( new StorageUnit( 125829120 ) )
+        .withMaxResponseSize( new StorageUnit( 625829120 ) )
+        .withMaxRequestSize( new StorageUnit( 625829120 ) )
         .withTls(serverset)
         .newService(serverset+":"+settings.httpsPort, label)
     )

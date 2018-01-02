@@ -120,7 +120,7 @@ class HttpLifter(excludeHttpHeadersComparison: Boolean) {
 
         /** When Content-Type is set as text/html**/
         case (Some(mediaType), _)
-          if mediaType.is(MediaType.PLAIN_TEXT_UTF_8) => {
+          if mediaType.is(MediaType.PLAIN_TEXT_UTF_8) || mediaType.toString == "text/plain" => {
           val textContentTry = Try {
             r.getContent.copy.toString(Charsets.Utf8)
           }
